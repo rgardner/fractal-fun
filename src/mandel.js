@@ -7,45 +7,45 @@ var generation = 0;
 window.onload = init;
 
 function init() {
-	setupGraphics();
+  setupGraphics();
 
-	//
-	// When you click on the canvas, the handler is called.
-	// An event object is passed in that contains the
-	//  x, y position of the mouse click. We pass those
-	//  values to the click handler.
-	//
-	canvas.onclick = function (event) {
-		handleClick(event.clientX, event.clientY, event.shiftKey);
-	};
+  //
+  // When you click on the canvas, the handler is called.
+  // An event object is passed in that contains the
+  //  x, y position of the mouse click. We pass those
+  //  values to the click handler.
+  //
+  canvas.onclick = function(event) {
+    handleClick(event.clientX, event.clientY, event.shiftKey);
+  };
 
-	//
-	// When you resize the browser window, we need
-	//	to resize the canvas and restart the workers.
-	//
-	window.onresize = function () {
-		resizeToWindow();
-	};
+  //
+  // When you resize the browser window, we need
+  //	to resize the canvas and restart the workers.
+  //
+  window.onresize = function() {
+    resizeToWindow();
+  };
 
-	//
-	// Create all the workers and set up the message handler.  
-	// 	Add each worker to the workers array.
-	//
-	for (var i = 0; i < NUM_WORKERS; i++) {
-		var worker = new Worker("worker.js");
+  //
+  // Create all the workers and set up the message handler.
+  // 	Add each worker to the workers array.
+  //
+  for (var i = 0; i < NUM_WORKERS; i++) {
+    var worker = new Worker("worker.js");
 
-		worker.onmessage = function (event) {
-			processWork(event.target, event.data)
-		}
+    worker.onmessage = function(event) {
+      processWork(event.target, event.data);
+    };
 
-		worker.idle = true;
-		workers.push(worker);
-	}
+    worker.idle = true;
+    workers.push(worker);
+  }
 
-	//
-	// Start the workers
-	//
-	startWorkers();
+  //
+  // Start the workers
+  //
+  startWorkers();
 }
 
 //
@@ -58,17 +58,17 @@ function init() {
 //		worker's computation.
 //
 function startWorkers() {
-	generation++;
-	nextRow = 0;
-	for (var i = 0; i < workers.length; i++) {
-		var worker = workers[i];
-		if (worker.idle) {
-			const task = createTask(nextRow);
-			worker.idle = false;
-			worker.postMessage(task);
-			nextRow++;
-		}
-	}
+  generation++;
+  nextRow = 0;
+  for (var i = 0; i < workers.length; i++) {
+    var worker = workers[i];
+    if (worker.idle) {
+      const task = createTask(nextRow);
+      worker.idle = false;
+      worker.postMessage(task);
+      nextRow++;
+    }
+  }
 }
 
 //
@@ -80,12 +80,12 @@ function startWorkers() {
 //		we just throw the data away.
 //	Once we've used the results, we assign the worker to
 //		start computing another row.
-//    
+//
 function processWork(worker, workerResults) {
-	if (workerResults.generation === generation) {
-		drawRow(workerResults);
-	}
-	reassignWorker(worker);
+  if (workerResults.generation === generation) {
+    drawRow(workerResults);
+  }
+  reassignWorker(worker);
 }
 
 //
@@ -93,14 +93,14 @@ function processWork(worker, workerResults) {
 //	This function gives an idle worker its next task.
 //
 function reassignWorker(worker) {
-	var row = nextRow++;
-	if (row >= canvas.height) {
-		worker.idle = true;
-	} else {
-		const task = createTask(row);
-		worker.idle = false;
-		worker.postMessage(task);
-	}
+  var row = nextRow++;
+  if (row >= canvas.height) {
+    worker.idle = true;
+  } else {
+    const task = createTask(row);
+    worker.idle = false;
+    worker.postMessage(task);
+  }
 }
 
 /**
@@ -110,11 +110,11 @@ function reassignWorker(worker) {
  * @param {boolean} shiftKey Was the shift key held down?
  */
 function handleClick(x, y, shiftKey) {
-	if (shiftKey) {
-		zoomOut(x, y);
-	} else {
-		zoomIn(x, y);
-	}
+  if (shiftKey) {
+    zoomOut(x, y);
+  } else {
+    zoomIn(x, y);
+  }
 }
 
 /**
@@ -122,27 +122,26 @@ function handleClick(x, y, shiftKey) {
  * @param {number} y Y position where the user clicked
  */
 function zoomIn(x, y) {
-	const width = r_max - r_min;
-	const height = i_min - i_max;
-	const click_r = r_min + ((width * x) / canvas.width);
-	const click_i = i_max + ((height * y) / canvas.height);
+  const width = r_max - r_min;
+  const height = i_min - i_max;
+  const click_r = r_min + (width * x) / canvas.width;
+  const click_i = i_max + (height * y) / canvas.height;
 
-	const zoom = 8;
+  const zoom = 8;
 
-	r_min = click_r - width / zoom;
-	r_max = click_r + width / zoom;
-	i_max = click_i - height / zoom;
-	i_min = click_i + height / zoom;
+  r_min = click_r - width / zoom;
+  r_max = click_r + width / zoom;
+  i_max = click_i - height / zoom;
+  i_min = click_i + height / zoom;
 
-	startWorkers();
+  startWorkers();
 }
 
 /**
  * @param {number} x - X position where the user clicked
  * @param {number} y - Y position where the user clicked
  */
-function zoomOut(x, y) {
-}
+function zoomOut(x, y) {}
 
 //
 // resizeToWindow
@@ -155,13 +154,13 @@ function zoomOut(x, y) {
 //		based on the new size.
 //
 function resizeToWindow() {
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-	var width = ((i_max - i_min) * canvas.width / canvas.height);
-	var r_mid = (r_max + r_min) / 2;
-	r_min = r_mid - width / 2;
-	r_max = r_mid + width / 2;
-	rowData = ctx.createImageData(canvas.width, 1);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  var width = ((i_max - i_min) * canvas.width) / canvas.height;
+  var r_mid = (r_max + r_min) / 2;
+  r_min = r_mid - width / 2;
+  r_max = r_mid + width / 2;
+  rowData = ctx.createImageData(canvas.width, 1);
 
-	startWorkers();
+  startWorkers();
 }

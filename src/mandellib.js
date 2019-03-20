@@ -20,10 +20,10 @@ class Task {
    * @param {number} width width of ImageData object to fill
    * @param {number} generation How far in we are
    * @param {number} r_min
-   * @param {number} r_max 
-   * @param {number} i 
-   * @param {number} max_iter 
-   * @param {number} escape 
+   * @param {number} r_max
+   * @param {number} i
+   * @param {number} max_iter
+   * @param {number} escape
    */
   constructor(row, width, generation, r_min, r_max, i, max_iter, escape) {
     /** @public @const */
@@ -53,16 +53,25 @@ class Task {
  * @returns {!Task} Worker task
  */
 function createTask(row) {
-  const i = i_max + (i_min - i_max) * row / canvas.height;
-  return new Task(row, rowData.width, generation, r_min, r_max, i, MAX_ITER, ESCAPE);
+  const i = i_max + ((i_min - i_max) * row) / canvas.height;
+  return new Task(
+    row,
+    rowData.width,
+    generation,
+    r_min,
+    r_max,
+    i,
+    MAX_ITER,
+    ESCAPE
+  );
 }
 
 //
-// This function maps the numbers 0 to MAX_ITER to 
+// This function maps the numbers 0 to MAX_ITER to
 // 256 and then fills the palette with (r, g, b) values
 // so that the colors next to each other in the array
 // are relatively close to each other in color, and
-// by increasing each of r, g, b at a different rate this 
+// by increasing each of r, g, b at a different rate this
 // works well to fill the spectrum for MAX_ITER > 256.
 //
 //
@@ -82,12 +91,13 @@ function makePalette() {
 //  for one row to a color using the palette.
 //
 function drawRow(workerResults) {
-  var values = workerResults.values;  // The values array the worker sends back
-  var pixelData = rowData.data;   // The actual pixels in the ImageData obj
+  var values = workerResults.values; // The values array the worker sends back
+  var pixelData = rowData.data; // The actual pixels in the ImageData obj
   // The pixelData is a *reference* to the
   //  rowData.data! so changing pixelData
   //  changes the rowData.data!!!
-  for (var i = 0; i < rowData.width; i++) {  // for each pixel in the row
+  for (var i = 0; i < rowData.width; i++) {
+    // for each pixel in the row
     var red = i * 4;
     var green = i * 4 + 1;
     var blue = i * 4 + 2;
@@ -129,13 +139,12 @@ function drawRow(workerResults) {
 //   to the width and height of the window.
 //
 function setupGraphics() {
-
   canvas = document.getElementById("fractal");
   ctx = canvas.getContext("2d");
 
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  var width = ((i_max - i_min) * canvas.width / canvas.height);
+  var width = ((i_max - i_min) * canvas.width) / canvas.height;
   var r_mid = (r_max + r_min) / 2;
   r_min = r_mid - width / 2;
   r_max = r_mid + width / 2;
