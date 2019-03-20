@@ -88,10 +88,10 @@ function processWork(worker, workerResults) {
   reassignWorker(worker);
 }
 
-//
-// reassignWorker
-//	This function gives an idle worker its next task.
-//
+/**
+ * Gives an idle worker its next task.
+ * @param {!Worker} worker
+ */
 function reassignWorker(worker) {
   var row = nextRow++;
   if (row >= canvas.height) {
@@ -138,21 +138,17 @@ function zoomIn(x, y) {
 }
 
 /**
- * @param {number} x - X position where the user clicked
- * @param {number} y - Y position where the user clicked
+ * @param {number} x X position where the user clicked
+ * @param {number} y Y position where the user clicked
  */
 function zoomOut(x, y) {}
 
-//
-// resizeToWindow
-//	When the user resizes the browser window,
-//		this function is called to resize the canvas,
-//		and reset the fractal parameters (changing the
-//		extent of the boundary and maintaining the new
-//		aspect ratio of the window).
-//	We restart the workers to compute the new fractal
-//		based on the new size.
-//
+/**
+ * Resizes the canvas, resets fractal parameters, and runs the workers.
+ *
+ * Changes the extent of the boundary and maintains the new aspect ratio of the
+ * window.
+ */
 function resizeToWindow() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;

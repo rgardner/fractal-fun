@@ -1,7 +1,3 @@
-/*
- * worker.js
- */
-
 importScripts("workerlib.js");
 
 onmessage = function(task) {

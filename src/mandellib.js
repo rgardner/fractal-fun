@@ -11,7 +11,7 @@ const ESCAPE = 100;
 /** @type {!Array<number>} */
 var palette = [];
 
-/*/**
+/**
  * A Web Worker task to compute a Mandelbrot set row for the canvas.
  */
 class Task {
@@ -93,6 +93,7 @@ function makePalette() {
 function drawRow(workerResults) {
   var values = workerResults.values; // The values array the worker sends back
   var pixelData = rowData.data; // The actual pixels in the ImageData obj
+
   // The pixelData is a *reference* to the
   //  rowData.data! so changing pixelData
   //  changes the rowData.data!!!
@@ -124,6 +125,7 @@ function drawRow(workerResults) {
       pixelData[blue] = color[2];
     }
   }
+
   //
   // paint the row back into the canvas
   // workerData.row is the row number we're working on
