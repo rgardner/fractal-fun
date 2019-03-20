@@ -19,14 +19,15 @@ function init() {
 	//  x, y position of the mouse click. We pass those
 	//  values to the click handler.
 	//
-	canvas.onclick = function(event) {
+	canvas.onclick = function (event) {
 		handleClick(event.clientX, event.clientY);
 	};
+
 	//
 	// When you resize the browser window, we need
 	//	to resize the canvas and restart the workers.
 	//
-	window.onresize = function() {
+	window.onresize = function () {
 		resizeToWindow();
 	};
 
@@ -37,7 +38,7 @@ function init() {
 	for (var i = 0; i < numberOfWorkers; i++) {
 		var worker = new Worker("worker.js");
 
-		worker.onmessage = function(event) {
+		worker.onmessage = function (event) {
 			processWork(event.target, event.data)
 		}
 
@@ -49,7 +50,6 @@ function init() {
 	// Start the workers
 	//
 	startWorkers();
-
 }
 
 //
@@ -73,7 +73,7 @@ function startWorkers() {
 			nextRow++;
 		}
 	}
-} 
+}
 
 //
 // processWork
@@ -107,7 +107,6 @@ function reassignWorker(worker) {
 	}
 }
 
-
 // handleClick
 //	This function takes the x, y position where the user
 //		clicked and sets the parameters for the new
@@ -126,10 +125,10 @@ function handleClick(x, y) {
 
 	var zoom = 8;
 
-	r_min = click_r - width/zoom;
-	r_max = click_r + width/zoom;
-	i_max = click_i - height/zoom;
-	i_min = click_i + height/zoom;
+	r_min = click_r - width / zoom;
+	r_max = click_r + width / zoom;
+	i_max = click_i - height / zoom;
+	i_min = click_i + height / zoom;
 
 	startWorkers();
 }
@@ -149,10 +148,9 @@ function resizeToWindow() {
 	canvas.height = window.innerHeight;
 	var width = ((i_max - i_min) * canvas.width / canvas.height);
 	var r_mid = (r_max + r_min) / 2;
-	r_min = r_mid - width/2;
-	r_max = r_mid + width/2;
+	r_min = r_mid - width / 2;
+	r_max = r_mid + width / 2;
 	rowData = ctx.createImageData(canvas.width, 1);
 
 	startWorkers();
 }
-
