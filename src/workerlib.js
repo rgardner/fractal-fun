@@ -1,10 +1,3 @@
-/*
- * workerlib.js
- *
- */
-
-/* -------- Ready Bake Code: Worker ------- */
-
 /**
  * Computes a row of the fractal.
  * 
@@ -29,7 +22,7 @@ function computeRow(task) {
 			z_i = 2 * z_r * z_i + c_i;
 			z_r = tmp;
 		}
-		if (iter == max_iter) {
+		if (iter === max_iter) {
 			iter = -1;
 		}
 		task.values.push(iter);

@@ -1,10 +1,3 @@
-/* 
- * mandellib.js
- *
- *
- * ------ Ready Bake Globals ---- 
- */
-
 var canvas;
 var ctx;
 
@@ -13,16 +6,12 @@ var i_min = -1.5;
 var r_min = -2.5;
 var r_max = 1.5;
 
-var max_iter = 1024;
-var escape = 100;
+const MAX_ITER = 1024;
+const ESCAPE = 100;
+/** @type {!Array<number>} */
 var palette = [];
 
-/* 
- * ------- Ready Bake Code --------
- *
- */
-
-/**
+/*/**
  * A Web Worker task to compute a Mandelbrot set row for the canvas.
  */
 class Task {
@@ -53,7 +42,7 @@ class Task {
     this.max_iter = max_iter;
     /** @public @const */
     this.escape = escape;
-    /** @public {?Array<number>} */
+    /** @type {?Array<number>} */
     this.values = undefined;
   }
 }
@@ -65,16 +54,16 @@ class Task {
  */
 function createTask(row) {
   const i = i_max + (i_min - i_max) * row / canvas.height;
-  return new Task(row, rowData.width, generation, r_min, r_max, i, max_iter, escape);
+  return new Task(row, rowData.width, generation, r_min, r_max, i, MAX_ITER, ESCAPE);
 }
 
 //
-// This function maps the numbers 0 to max_iter to 
+// This function maps the numbers 0 to MAX_ITER to 
 // 256 and then fills the palette with (r, g, b) values
 // so that the colors next to each other in the array
 // are relatively close to each other in color, and
 // by increasing each of r, g, b at a different rate this 
-// works well to fill the spectrum for max_iter > 256.
+// works well to fill the spectrum for MAX_ITER > 256.
 //
 //
 function makePalette() {
@@ -83,7 +72,7 @@ function makePalette() {
     if (x < 0) x = -x;
     return x;
   }
-  for (i = 0; i <= this.max_iter; i++) {
+  for (i = 0; i <= MAX_ITER; i++) {
     palette.push([wrap(7 * i), wrap(5 * i), wrap(11 * i)]);
   }
 }

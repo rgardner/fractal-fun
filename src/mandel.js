@@ -1,8 +1,4 @@
-/* 
- * mandel.js
- */
-
-var numberOfWorkers = 8;
+const NUM_WORKERS = 8;
 var workers = [];
 var rowData;
 var nextRow = 0;
@@ -35,7 +31,7 @@ function init() {
 	// Create all the workers and set up the message handler.  
 	// 	Add each worker to the workers array.
 	//
-	for (var i = 0; i < numberOfWorkers; i++) {
+	for (var i = 0; i < NUM_WORKERS; i++) {
 		var worker = new Worker("worker.js");
 
 		worker.onmessage = function (event) {
@@ -86,7 +82,7 @@ function startWorkers() {
 //		start computing another row.
 //    
 function processWork(worker, workerResults) {
-	if (workerResults.generation == generation) {
+	if (workerResults.generation === generation) {
 		drawRow(workerResults);
 	}
 	reassignWorker(worker);
@@ -146,7 +142,6 @@ function zoomIn(x, y) {
  * @param {number} y - Y position where the user clicked
  */
 function zoomOut(x, y) {
-	console.log('zoom out');
 }
 
 //
