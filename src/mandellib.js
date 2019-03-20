@@ -22,21 +22,50 @@ var palette = [];
  *
  */
 
-//
-// packages up the data we need to send to the worker
-//
+/**
+ * A Web Worker task to compute a Mandelbrot set row for the canvas.
+ */
+class Task {
+  /**
+   * @param {number} row Row number we're working on
+   * @param {number} width width of ImageData object to fill
+   * @param {number} generation How far in we are
+   * @param {number} r_min
+   * @param {number} r_max 
+   * @param {number} i 
+   * @param {number} max_iter 
+   * @param {number} escape 
+   */
+  constructor(row, width, generation, r_min, r_max, i, max_iter, escape) {
+    /** @public @const */
+    this.row = row;
+    /** @public @const */
+    this.width = width;
+    /** @public @const */
+    this.generation = generation;
+    /** @public @const */
+    this.r_min = r_min;
+    /** @public @const */
+    this.r_max = r_max;
+    /** @public @const */
+    this.i = i;
+    /** @public @const */
+    this.max_iter = max_iter;
+    /** @public @const */
+    this.escape = escape;
+    /** @public {?Array<number>} */
+    this.values = undefined;
+  }
+}
+
+/**
+ * Packages up the data we need to send to the worker.
+ * @param {number} row Row number we're working on
+ * @returns {!Task} Worker task
+ */
 function createTask(row) {
-  var task = {
-    row: row,       // row number we're working on
-    width: rowData.width,   // width of the ImageData object to fill
-    generation: generation, // how far in we are
-    r_min: r_min,
-    r_max: r_max,
-    i: i_max + (i_min - i_max) * row / canvas.height,
-    max_iter: max_iter,
-    escape: escape
-  };
-  return task;
+  const i = i_max + (i_min - i_max) * row / canvas.height;
+  return new Task(row, rowData.width, generation, r_min, r_max, i, max_iter, escape);
 }
 
 //

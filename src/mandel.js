@@ -20,7 +20,7 @@ function init() {
 	//  values to the click handler.
 	//
 	canvas.onclick = function (event) {
-		handleClick(event.clientX, event.clientY);
+		handleClick(event.clientX, event.clientY, event.shiftKey);
 	};
 
 	//
@@ -67,7 +67,7 @@ function startWorkers() {
 	for (var i = 0; i < workers.length; i++) {
 		var worker = workers[i];
 		if (worker.idle) {
-			var task = createTask(nextRow);
+			const task = createTask(nextRow);
 			worker.idle = false;
 			worker.postMessage(task);
 			nextRow++;
@@ -101,29 +101,37 @@ function reassignWorker(worker) {
 	if (row >= canvas.height) {
 		worker.idle = true;
 	} else {
-		var task = createTask(row);
+		const task = createTask(row);
 		worker.idle = false;
 		worker.postMessage(task);
 	}
 }
 
-// handleClick
-//	This function takes the x, y position where the user
-//		clicked and sets the parameters for the new
-//		fractal. The zoom factor sets the new extent
-//		of the bounds of the Mandelbrot set to the
-//		zoomed in size. The new fractal maintains
-//		the aspect ratio of the current canvas size.
-//	We start the workers over on the new zoomed in
-//		fractal.
-//
-function handleClick(x, y) {
-	var width = r_max - r_min;
-	var height = i_min - i_max;
-	var click_r = r_min + ((width * x) / canvas.width);
-	var click_i = i_max + ((height * y) / canvas.height);
+/**
+ * Sets new parameters for fractals and starts the workers.
+ * @param {number} x X position where the user clicked
+ * @param {number} y Y position where the user clicked
+ * @param {boolean} shiftKey Was the shift key held down?
+ */
+function handleClick(x, y, shiftKey) {
+	if (shiftKey) {
+		zoomOut(x, y);
+	} else {
+		zoomIn(x, y);
+	}
+}
 
-	var zoom = 8;
+/**
+ * @param {number} x X position where the user clicked
+ * @param {number} y Y position where the user clicked
+ */
+function zoomIn(x, y) {
+	const width = r_max - r_min;
+	const height = i_min - i_max;
+	const click_r = r_min + ((width * x) / canvas.width);
+	const click_i = i_max + ((height * y) / canvas.height);
+
+	const zoom = 8;
 
 	r_min = click_r - width / zoom;
 	r_max = click_r + width / zoom;
@@ -131,6 +139,14 @@ function handleClick(x, y) {
 	i_min = click_i + height / zoom;
 
 	startWorkers();
+}
+
+/**
+ * @param {number} x - X position where the user clicked
+ * @param {number} y - Y position where the user clicked
+ */
+function zoomOut(x, y) {
+	console.log('zoom out');
 }
 
 //
