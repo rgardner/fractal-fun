@@ -1,4 +1,6 @@
+/** @type {?HTMLCanvasElement} */
 var canvas;
+/** @type {?CanvasRenderingContext2D} */
 var ctx;
 
 var i_max = 1.5;
@@ -86,10 +88,9 @@ function makePalette() {
   }
 }
 
-//
-// drawRow gets maps the values in the array returned from a worker
-//  for one row to a color using the palette.
-//
+/**
+ * Maps worker computed results for one row to a color using the palette.
+ */
 function drawRow(workerResults) {
   var values = workerResults.values; // The values array the worker sends back
   var pixelData = rowData.data; // The actual pixels in the ImageData obj

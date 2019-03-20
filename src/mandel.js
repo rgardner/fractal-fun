@@ -1,5 +1,6 @@
 const NUM_WORKERS = 8;
 var workers = [];
+/** @type ImageData */
 var rowData;
 var nextRow = 0;
 var generation = 0;
@@ -9,28 +10,15 @@ window.onload = init;
 function init() {
   setupGraphics();
 
-  //
-  // When you click on the canvas, the handler is called.
-  // An event object is passed in that contains the
-  //  x, y position of the mouse click. We pass those
-  //  values to the click handler.
-  //
   canvas.onclick = function(event) {
     handleClick(event.clientX, event.clientY, event.shiftKey);
   };
 
-  //
-  // When you resize the browser window, we need
-  //	to resize the canvas and restart the workers.
-  //
   window.onresize = function() {
     resizeToWindow();
   };
 
-  //
-  // Create all the workers and set up the message handler.
-  // 	Add each worker to the workers array.
-  //
+  // Populate workers array with initialized workers.
   for (var i = 0; i < NUM_WORKERS; i++) {
     var worker = new Worker("worker.js");
 
@@ -42,21 +30,15 @@ function init() {
     workers.push(worker);
   }
 
-  //
-  // Start the workers
-  //
   startWorkers();
 }
 
-//
-// startWorkers
-//	This function resets the workers to start them working
-//		at the top of the fractal (row 0). It loops through
-//		all the workers in the workers array and assigns
-//		each worker a task to compute a row.
-//	By posting a message with the task, we start the
-//		worker's computation.
-//
+/**
+ * Resets the workers to start working at the top of the fractal.
+ *
+ * Loops through all the workers in the workers array and assigns each worker a
+ * task to compute a row.
+ */
 function startWorkers() {
   generation++;
   nextRow = 0;
@@ -71,16 +53,14 @@ function startWorkers() {
   }
 }
 
-//
-// processWork
-// 	This is the function we call when the worker posts
-//		back a message with the results.
-//	If the worker is working on the current fractal
-//		generation, we draw the row of data, otherwise
-//		we just throw the data away.
-//	Once we've used the results, we assign the worker to
-//		start computing another row.
-//
+/**
+ * Draws the worker results if still needed.
+ *
+ * If a new fractal generation has been requested, then discard these worker
+ * results.
+ * @param {Worker} worker
+ * @param {any} workerResults
+ */
 function processWork(worker, workerResults) {
   if (workerResults.generation === generation) {
     drawRow(workerResults);
