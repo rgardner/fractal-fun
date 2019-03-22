@@ -2,7 +2,7 @@
  * Computes a row of the fractal.
  *
  * The values array returned to the manager code contains a number for each
- * pixel in the row
+ * pixel in the row.
  * @param {!Task} task
  * @returns {!Task} Task with values array property populated.
  */
