@@ -1,9 +1,11 @@
 # Fractal Fun
 
+<https://www.bob-gardner.com/fractal-fun/src/fractal.html>
+
 Experiments with the [Mandelbrot set][mandelbrot]. This is based on the
 Mandelbrot exercise in chapter 10 of the the [Head First HTML5
 Programming][hfhtml5] book. This project uses [Web Workers][webworkers] to
-render the fractal in parallel.
+compute the fractal in parallel.
 
 ## Getting Started
 
