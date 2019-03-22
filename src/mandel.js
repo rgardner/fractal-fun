@@ -121,7 +121,21 @@ function zoomIn(x, y) {
  * @param {number} x X position where the user clicked
  * @param {number} y Y position where the user clicked
  */
-function zoomOut(x, y) {}
+function zoomOut(x, y) {
+  const width = r_max - r_min;
+  const height = i_min - i_max;
+  const click_r = r_min + (width * x) / canvas.width;
+  const click_i = i_max + (height * y) / canvas.height;
+
+  const zoom = 2;
+
+  r_min = click_r - width * zoom;
+  r_max = click_r + width * zoom;
+  i_max = click_i - height * zoom;
+  i_min = click_i + height * zoom;
+
+  startWorkers();
+}
 
 /**
  * Resizes the canvas, resets fractal parameters, and runs the workers.
